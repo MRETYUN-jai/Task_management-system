@@ -7,12 +7,15 @@
 import axios from 'axios'
 
 // Create an axios instance with our backend's base URL
+// In production: VITE_API_URL = https://your-backend.railway.app/api
+// In local dev: falls back to '/api' (proxied by vite.config.js to localhost:5000)
 const api = axios.create({
-  baseURL: '/api',  // Proxied to http://localhost:5000/api via vite.config.js
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
 })
+
 
 // ── Request Interceptor ────────────────────────────────────────────────────
 // Runs before every request. Attaches the JWT token from localStorage.

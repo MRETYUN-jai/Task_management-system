@@ -21,8 +21,24 @@ const app = express();
 
 // ── Global Middleware ──────────────────────────────────────────────────────
 
-// Allow requests from the frontend (http://localhost:5173 in dev)
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// Allow requests from frontend — both local dev and Vercel production URL
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL, // Set this to your Vercel URL on Railway
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 
 // Parse incoming JSON request bodies
 app.use(express.json());
