@@ -41,7 +41,7 @@ const Reports = () => {
 
   useEffect(() => { fetchReport(tab) }, [tab])
 
-  const formatDate = (d) => d ? new Date(d).toLocaleDateString() : 'â€”'
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString() : '—'
 
   const exportToCsv = () => {
     if (data.length === 0) return;
@@ -115,9 +115,9 @@ const Reports = () => {
 
       {/* Tab Switcher */}
       <div className="flex gap-2 flex-wrap">
-        <TabBtn active={tab === 'completed'} onClick={() => setTab('completed')}>âœ… Completed Tasks</TabBtn>
-        <TabBtn active={tab === 'pending'} onClick={() => setTab('pending')}>â³ Pending Tasks</TabBtn>
-        <TabBtn active={tab === 'user-performance'} onClick={() => setTab('user-performance')}>ðŸ‘¥ User Performance</TabBtn>
+        <TabBtn active={tab === 'completed'} onClick={() => setTab('completed')}>✅ Completed Tasks</TabBtn>
+        <TabBtn active={tab === 'pending'} onClick={() => setTab('pending')}>⏳ Pending Tasks</TabBtn>
+        <TabBtn active={tab === 'user-performance'} onClick={() => setTab('user-performance')}>👥 User Performance</TabBtn>
       </div>
 
       {/* Summary count */}
@@ -161,7 +161,7 @@ const Reports = () => {
                       <td className="px-4 py-3 text-gray-600">{formatDate(t.deadline)}</td>
                       {tab === 'pending' && (
                         <td className="px-4 py-3">
-                          {t.is_overdue ? <span className="text-red-600 font-medium">Yes âš ï¸</span> : <span className="text-green-600">No</span>}
+                          {t.is_overdue ? <span className="text-red-600 font-medium">Yes ⚠️</span> : <span className="text-green-600">No</span>}
                         </td>
                       )}
                       {tab === 'completed' && <td className="px-4 py-3 text-gray-600">{formatDate(t.completed_at)}</td>}
