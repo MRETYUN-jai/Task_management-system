@@ -1,0 +1,29 @@
+# Node.js dependencies
+node_modules/
+
+# Environment files (contain secrets - NEVER commit these)
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# MySQL data
+*.sql.bak
