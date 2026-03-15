@@ -43,9 +43,75 @@ const Reports = () => {
 
   const formatDate = (d) => d ? new Date(d).toLocaleDateString() : '—'
 
+  const exportToCsv = () => {
+    if (data.length === 0) return;
+    
+    let csvContent = "data:text/csv;charset=utf-8,";
+    let headers = [];
+    
+    // Determine headers based on current tab
+    if (tab === 'completed' || tab === 'pending') {
+      headers = ['ID', 'Title', 'Priority', 'Created By', 'Deadline'];
+      if (tab === 'pending') headers.push('Overdue');
+      if (tab === 'completed') headers.push('Completed At');
+    } else if (tab === 'user-performance') {
+      headers = ['ID', 'Name', 'Role', 'Total Assigned', 'Completed', 'In Progress', 'Pending', 'Completion %'];
+    }
+    
+    csvContent += headers.join(",") + "\r\n";
+    
+    // Add data rows
+    data.forEach(row => {
+      let rowArray = [];
+      if (tab === 'completed' || tab === 'pending') {
+        rowArray = [
+          row.task_id,
+          `"${row.title.replace(/"/g, '""')}"`, // Escape quotes in title
+          row.priority,
+          row.created_by,
+          formatDate(row.deadline)
+        ];
+        if (tab === 'pending') rowArray.push(row.is_overdue ? 'Yes' : 'No');
+        if (tab === 'completed') rowArray.push(formatDate(row.completed_at));
+      } else if (tab === 'user-performance') {
+        const pct = row.total_assigned > 0 ? Math.round((row.completed / row.total_assigned) * 100) : 0;
+        rowArray = [
+          row.user_id,
+          `"${row.name}"`,
+          row.role,
+          row.total_assigned,
+          row.completed,
+          row.in_progress,
+          row.pending,
+          `${pct}%`
+        ];
+      }
+      csvContent += rowArray.join(",") + "\r\n";
+    });
+    
+    // Create download link and trigger download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `task_report_${tab}_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
+        <button 
+          onClick={exportToCsv}
+          disabled={data.length === 0 || loading}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm shadow-sm"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Export CSV
+        </button>
+      </div>
 
       {/* Tab Switcher */}
       <div className="flex gap-2 flex-wrap">
