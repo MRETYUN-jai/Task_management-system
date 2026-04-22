@@ -24,6 +24,7 @@ const app = express();
 // Allow requests from frontend — both local dev and Vercel production URL
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://task-management-system-mocha-tau.vercel.app", // Explicitly added to fix CORS timeout
   process.env.FRONTEND_URL, // Set this to your Vercel URL on Railway
 ].filter(Boolean);
 
